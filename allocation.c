@@ -64,7 +64,20 @@ void f_fit(char pr_id[3], int space_rqstd)
 
 	printf("No space left process %s, of %dkb\n", pr_id, space_rqstd);
 }
+void compact()
+{
+}
 
+void stat_report()
+{
+    temp_node = head_node;
+    printf("Available space left: %d\n", head_node->free_space);
+    while (temp_node->nxt != NULL)
+    {
+        printf("Addresses [%d : %d] Process %s\n", temp_node->nxt->starting_pointer, temp_node->nxt->ending_pointer, temp_node->nxt->pr_id);
+        temp_node = temp_node->nxt;
+    }
+}
 void RL_memory(char procss_id[3])
 {
     printf("releasing memory for process %s\n", procss_id );
