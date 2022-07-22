@@ -40,7 +40,7 @@ void f_fit(char pr_id[3], int space_rqstd)
             strcpy(temp_node->nxt->pr_id, pr_id);
             temp_node->nxt->ending_pointer = temp_node->nxt->starting_pointer + space_rqstd;
 
-            //if the space_rqstd is smaller then the space found.
+            //if space_rqstd is less than the available space.
             space_left = temp_node->nxt->free_space - space_rqstd;
             if (space_left > 0)
             {
