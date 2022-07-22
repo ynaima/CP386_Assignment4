@@ -64,3 +64,79 @@ void f_fit(char pr_id[3], int space_rqstd)
 
 	printf("No space left process %s, of %dkb\n", pr_id, space_rqstd);
 }
+
+
+int main(int argc, char *argv[])
+{
+
+    int init_mem = atoi(argv[1]);
+    printf("%d\n", init_mem);
+    char usr_input[128];
+
+    printf("allocator>");
+    fflush(stdout);
+
+    if (read(0, usr_input, 128) < 0)
+       write(2, "Cannot not read input\n", 31);
+
+    head_node = (struct Node *)malloc(sizeof(struct Node));
+    blk_of_space = (struct Node *)malloc(sizeof(struct Node));
+
+    strcpy(head_node->pr_id, "Head Node");
+    head_node->starting_pointer = -1;
+    head_node->ending_pointer = -1;
+    head_node->free_space = init_mem;
+    head_node->nxt = blk_of_space;
+
+    strcpy(blk_of_space->pr_id, "Unused");
+    blk_of_space->starting_pointer = 0;
+    blk_of_space->ending_pointer = init_mem;
+    blk_of_space->free_space = blk_of_space->ending_pointer - blk_of_space->starting_pointer;
+    blk_of_space->nxt = NULL;
+
+    lastAddress = init_mem;
+
+    while (usr_input[0] != 'X')
+    {
+        if ((sscanf(usr_input, "%s %s", reqst, pr)) < 0)
+            write(2, "Cannot not read input\n", 31);
+
+
+        if (strcmp("RQ", reqst) == 0)
+        {
+
+            sscanf(usr_input, "%s %s %d %s", reqst, pr, &space_rqstd, alg_type);
+            request_memory(pr, space_rqstd, alg_type);
+        }
+        else if (strcmp("RL", reqst) == 0)
+        {
+
+            sscanf(usr_input, "%s %s", reqst, pr);
+            RL_memory(pr);
+        }
+        else if (strcmp("C", reqst) == 0)
+        {
+            compact();
+            printf("Compaction  process is successful\n");
+
+        }
+        else if (strcmp("Status", reqst) == 0)
+        {
+            stat_report();
+        }
+        else
+        {
+            printf(" Unrecognized Command \n");
+        }
+
+        stat_report();
+
+        printf("allocator>");
+        fflush(stdout);
+
+        if (read(0, usr_input, 128) < 0)
+            write(2, "Cannot not read input\n", 31);
+    }
+    return 0;
+}
+
