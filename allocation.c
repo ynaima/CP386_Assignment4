@@ -65,7 +65,25 @@ void f_fit(char pr_id[3], int space_rqstd)
 	printf("No space left process %s, of %dkb\n", pr_id, space_rqstd);
 }
 
+void RL_memory(char procss_id[3])
+{
+    printf("releasing memory for process %s\n", procss_id );
+    temp_node = head_node;
+        while (temp_node->nxt != NULL)
+        {
+            if (strcmp(temp_node->pr_id, procss_id) == 0){
+            free(temp_node);
+            temp_node->free_space=0;
+    	    printf("Successfully released memory for process %s\n", procss_id);
+           return;
+            }
+            else
+		    
+            temp_node = temp_node->nxt;
 
+        }
+return;
+}
 int main(int argc, char *argv[])
 {
 
