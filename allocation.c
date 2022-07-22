@@ -97,6 +97,20 @@ void RL_memory(char procss_id[3])
         }
 return;
 }
+void request_memory(char pr_id[3], int space_rqstd, char algrithm[2])
+{
+    if (strcmp("W", algrithm) == 0)
+        w_fit(pr_id, space_rqstd);
+    else if (strcmp("B", algrithm) == 0)
+        b_fit(pr_id, space_rqstd);
+    else if (strcmp("F", algrithm) == 0)
+        f_fit(pr_id, space_rqstd);
+    else
+    {
+        printf("Choose between f_fit, w_fit, and f_fit. Try again\n");
+        return;
+    }
+}
 int main(int argc, char *argv[])
 {
 
