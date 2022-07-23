@@ -25,6 +25,121 @@ struct Node
     char pr_id[MAX_PID];
 };
 
+// find the smalledt hole that can fit the requested space
+void b_fit(char pr_id[3], int space_rqstd)
+{
+	struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
+    head_node->free_space = head_node->free_space - space_rqstd;
+	int least_space = 1048576;
+	int space_left = 0;
+	temp_node = head_node;
+
+	while (temp_node->nxt != NULL)
+	{
+		if (strcmp(temp_node->nxt->pr_id, "Unused") == 0 && temp_node->nxt->free_space >= space_rqstd)
+		{
+
+			if (temp_node->nxt->free_space >= least_space)
+				least_space = temp_node->nxt->free_space;
+		}
+		else{
+			temp_node = temp_node->nxt;
+		}
+		return;
+	}
+    printf("I am in between the 2 loops");
+
+    while (temp_node->nxt != NULL)
+       {
+           if (temp_node->nxt->free_space >= least_space)
+
+           {
+
+               strcpy(temp_node->nxt->pr_id, pr_id);
+               temp_node->nxt->ending_pointer = temp_node->nxt->starting_pointer + space_rqstd;
+
+               //if the space_rqstd is smaller then the space found.
+               space_left = temp_node->nxt->free_space - space_rqstd;
+               if (space_left > 0)
+               {
+                   struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
+                   strcpy(new_Node->pr_id, "Unused");
+                   new_Node->free_space = space_left;
+                   temp_node->nxt->free_space = space_rqstd;
+                   new_Node->starting_pointer = temp_node->nxt->ending_pointer + 1;
+                   new_Node->ending_pointer = new_Node->starting_pointer + space_left;
+                   if (new_Node->ending_pointer > lastAddress)
+                       new_Node->ending_pointer = lastAddress;
+   					new_Node->nxt = temp_node->nxt->nxt;
+   					temp_node->nxt->nxt = new_Node;
+   			}
+
+   			return;
+   		}
+   		else
+   			temp_node = temp_node->nxt;
+   	}
+
+   }
+
+// find the largest hole that can fit the requested space
+void w_fit(char pr_id[3], int space_rqstd)
+{
+	struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
+    head_node->free_space = head_node->free_space - space_rqstd;
+
+	int largest_hole= 1048576;
+	int space_left = 0;
+	temp_node = head_node;
+
+	while (temp_node->nxt != NULL)
+	{
+		if (strcmp(temp_node->nxt->pr_id, "Unused") == 0 && temp_node->nxt->free_space >= space_rqstd)
+		{
+
+			if (temp_node->nxt->free_space >= largest_hole)
+				largest_hole = temp_node->nxt->free_space;
+		}
+		else{
+			temp_node = temp_node->nxt;
+		}
+		return;
+	}
+	temp_node = head_node;
+
+	while (temp_node->nxt != NULL)
+	   {
+		   if (strcmp(temp_node->nxt->pr_id, "Unused") ==0)
+
+		   {
+			   head_node->free_space = head_node->free_space - space_rqstd;
+
+			   strcpy(temp_node->nxt->pr_id, pr_id);
+			   temp_node->nxt->ending_pointer = temp_node->nxt->starting_pointer + space_rqstd;
+
+			   //if the space_rqstd is smaller then the space found.
+			   space_left = temp_node->nxt->free_space - space_rqstd;
+			   if (space_left > 0)
+			   {
+				   struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
+				   strcpy(new_Node->pr_id, "Unused");
+				   new_Node->free_space = space_left;
+				   temp_node->nxt->free_space = space_rqstd;
+				   new_Node->starting_pointer = temp_node->nxt->ending_pointer + 1;
+				   new_Node->ending_pointer = new_Node->starting_pointer + space_left;
+				   if (new_Node->ending_pointer > lastAddress)
+					   new_Node->ending_pointer = lastAddress;
+					new_Node->nxt = temp_node->nxt->nxt;
+					temp_node->nxt->nxt = new_Node;
+			}
+
+			return;
+		}
+		else
+			temp_node = temp_node->nxt;
+	}
+	printf("No space left process %s, of %dkb\n", pr_id, space_rqstd);
+}
 void f_fit(char pr_id[3], int space_rqstd)
 {
     temp_node = head_node;
