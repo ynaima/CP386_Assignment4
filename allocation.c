@@ -194,25 +194,27 @@ void stat_report()
     }
 }
 
-void RL_memory(char procss_id[3])
+void request_memory(char pr_id[3], int space_rqstd, char algrithm[2])
 {
-    printf("releasing memory for process %s\n", procss_id );
-    temp_node = head_node;
-        while (temp_node->nxt != NULL)
-        {
-            if (strcmp(temp_node->pr_id, procss_id) == 0){
-            free(temp_node);
-            temp_node=NULL;
-    	    printf("Successfully released memory for process %s\n", procss_id);
-           return;
-            }
-            else
-            head_node->free_space = head_node->free_space +temp_node->free_space;
-
-        }
-
-return;
+    if (strcmp("W", algrithm) == 0){
+        w_fit(pr_id, space_rqstd);
+		printf("Successfully allocated %d to process %s\n", space_rqstd, pr_id);
+    }
+    else if (strcmp("B", algrithm) == 0){
+        b_fit(pr_id, space_rqstd);
+		printf("Successfully allocated %d to process %s\n", space_rqstd, pr_id);
+	}
+    else if (strcmp("F", algrithm) == 0){
+        f_fit(pr_id, space_rqstd);
+		printf("Successfully allocated %dto process %s\n", space_rqstd, pr_id);
+    }
+    else
+    {
+        printf("Choose between f_fit, w_fit, and f_fit. Try again\n");
+        return;
+    }
 }
+
 void request_memory(char pr_id[3], int space_rqstd, char algrithm[2])
 {
     if (strcmp("W", algrithm) == 0)
@@ -257,7 +259,7 @@ int main(int argc, char *argv[])
 
     lastAddress = init_mem;
 
-    while (usr_input[0] != 'X')
+    while (usr_input[0] != 'Exit')
     {
         if ((sscanf(usr_input, "%s %s", reqst, pr)) < 0)
             write(2, "Cannot not read input\n", 31);
