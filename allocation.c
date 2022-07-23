@@ -85,60 +85,60 @@ void b_fit(char pr_id[3], int space_rqstd)
 // find the largest hole that can fit the requested space
 void w_fit(char pr_id[3], int space_rqstd)
 {
-	struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
-    head_node->free_space = head_node->free_space - space_rqstd;
+struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
+head_node->free_space = head_node->free_space - space_rqstd;
 
-	int largest_hole= 1048576;
-	int space_left = 0;
-	temp_node = head_node;
+int largest_hole= 1048576;
+int space_left = 0;
+temp_node = head_node;
 
-	while (temp_node->nxt != NULL)
+while (temp_node->nxt != NULL)
+{
+	if (strcmp(temp_node->nxt->pr_id, "Unused") == 0 && temp_node->nxt->free_space >= space_rqstd)
 	{
-		if (strcmp(temp_node->nxt->pr_id, "Unused") == 0 && temp_node->nxt->free_space >= space_rqstd)
-		{
 
-			if (temp_node->nxt->free_space >= largest_hole)
-				largest_hole = temp_node->nxt->free_space;
-		}
-		else{
-			temp_node = temp_node->nxt;
-		}
-		return;
+		if (temp_node->nxt->free_space >= largest_hole)
+			largest_hole = temp_node->nxt->free_space;
 	}
-	temp_node = head_node;
-
-	while (temp_node->nxt != NULL)
-	   {
-		   if (strcmp(temp_node->nxt->pr_id, "Unused") ==0)
-
-		   {
-			   head_node->free_space = head_node->free_space - space_rqstd;
-
-			   strcpy(temp_node->nxt->pr_id, pr_id);
-			   temp_node->nxt->ending_pointer = temp_node->nxt->starting_pointer + space_rqstd;
-
-			   //if the space_rqstd is smaller then the space found.
-			   space_left = temp_node->nxt->free_space - space_rqstd;
-			   if (space_left > 0)
-			   {
-				   struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
-				   strcpy(new_Node->pr_id, "Unused");
-				   new_Node->free_space = space_left;
-				   temp_node->nxt->free_space = space_rqstd;
-				   new_Node->starting_pointer = temp_node->nxt->ending_pointer + 1;
-				   new_Node->ending_pointer = new_Node->starting_pointer + space_left;
-				   if (new_Node->ending_pointer > lastAddress)
-					   new_Node->ending_pointer = lastAddress;
-					new_Node->nxt = temp_node->nxt->nxt;
-					temp_node->nxt->nxt = new_Node;
-			}
-
-			return;
-		}
-		else
-			temp_node = temp_node->nxt;
+	else{
+		temp_node = temp_node->nxt;
 	}
-	printf("No space left process %s, of %dkb\n", pr_id, space_rqstd);
+	return;
+}
+temp_node = head_node;
+
+while (temp_node->nxt != NULL)
+   {
+   if (strcmp(temp_node->nxt->pr_id, "Unused") ==0)
+
+   {
+   head_node->free_space = head_node->free_space - space_rqstd;
+
+   strcpy(temp_node->nxt->pr_id, pr_id);
+   temp_node->nxt->ending_pointer = temp_node->nxt->starting_pointer + space_rqstd;
+
+   //if the space_rqstd is smaller then the space found.
+   space_left = temp_node->nxt->free_space - space_rqstd;
+   if (space_left > 0)
+   {
+   struct Node *new_Node = (struct Node *)malloc(sizeof(struct Node));
+   strcpy(new_Node->pr_id, "Unused");
+   new_Node->free_space = space_left;
+   temp_node->nxt->free_space = space_rqstd;
+   new_Node->starting_pointer = temp_node->nxt->ending_pointer + 1;
+   new_Node->ending_pointer = new_Node->starting_pointer + space_left;
+   if (new_Node->ending_pointer > lastAddress)
+	   new_Node->ending_pointer = lastAddress;
+	new_Node->nxt = temp_node->nxt->nxt;
+	temp_node->nxt->nxt = new_Node;
+}
+
+return;
+}
+else
+	temp_node = temp_node->nxt;
+}
+printf("No space left process %s, of %dkb\n", pr_id, space_rqstd);
 }
 void f_fit(char pr_id[3], int space_rqstd)
 {
@@ -193,6 +193,7 @@ void stat_report()
         temp_node = temp_node->nxt;
     }
 }
+
 void RL_memory(char procss_id[3])
 {
     printf("releasing memory for process %s\n", procss_id );
@@ -201,15 +202,15 @@ void RL_memory(char procss_id[3])
         {
             if (strcmp(temp_node->pr_id, procss_id) == 0){
             free(temp_node);
-            temp_node->free_space=0;
+            temp_node=NULL;
     	    printf("Successfully released memory for process %s\n", procss_id);
            return;
             }
             else
-		    
-            temp_node = temp_node->nxt;
+            head_node->free_space = head_node->free_space +temp_node->free_space;
 
         }
+
 return;
 }
 void request_memory(char pr_id[3], int space_rqstd, char algrithm[2])
